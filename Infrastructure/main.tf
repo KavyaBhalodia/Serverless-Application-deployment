@@ -12,7 +12,7 @@ terraform {
 # Intialized Backend here.
 terraform {
   backend "s3" {
-    bucket = "harshvardhan-tfstate"
+    bucket = "kavya-serverless-app-deployment-bucket"
     key    = "serverless/terraform.tfstate"
     region = "us-west-2"
   }
@@ -26,19 +26,19 @@ provider "aws" {
 
 module "api_GW" {
   source = "./modules/api-gw"
-  name   = "harshvardhan_Student_api"
+  name   = "Student_api"
   path = {
     "health"   = ["GET"],
     "students" = ["GET"]
     "student"  = ["ANY"]
   }
-  invoke_arn    = module.harshvardhan-lambda.invoke_arn
-  function_name = module.harshvardhan-lambda.function_name
+  invoke_arn    = module.lambda.invoke_arn
+  function_name = module.lambda.function_name
 }
 
-module "harshvardhan_dynamodb" {
+module "dynamodb" {
   source         = "./modules/dynamodb"
-  name           = "Harshvardhan_Student_Data"
+  name           = "Student_Data"
   read_capacity  = 5
   write_capacity = 5
   hash_key       = "studentId"
@@ -48,10 +48,10 @@ module "harshvardhan_dynamodb" {
 }
 
 
-module "harshvardhan-lambda" {
+module "lambda" {
   source  = "./modules/lambda"
-  name    = "Harshvardhan-lambda"
-  role    = aws_iam_role.Harshvardhan_Lambda_Role.arn
+  name    = "lambda"
+  role    = aws_iam_role.Lambda_Role.arn
   handler = "lambda_function.lambda_handler"
   file    = data.archive_file.lambda_zip.output_path
   hash    = data.archive_file.lambda_zip.output_base64sha256

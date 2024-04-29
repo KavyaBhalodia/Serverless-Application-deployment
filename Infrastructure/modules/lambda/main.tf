@@ -1,4 +1,4 @@
-resource "aws_lambda_function" "Harshvardhan_Lambda_backend" {
+resource "aws_lambda_function" "Lambda_backend" {
   function_name    = var.name
   role             = var.role
   handler          = var.handler
